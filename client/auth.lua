@@ -36,19 +36,17 @@ RegisterNetEvent('qb-multicharacter:client:showLogin', function()
     CheckUserAccount()
 end)
 
-RegisterNetEvent('qb-multicharacter:client:loginResult', function(result)
-    if result.success then
+RegisterNetEvent('qb-multicharacter:client:authResult', function(result)
+    if result.action == 'loginResult' and result.success then
         isLoggedIn = true
         currentUser = result.userData
         HideLoginUI()
         -- Proceed to character selection
         TriggerEvent('qb-multicharacter:client:chooseChar')
     end
-    -- Error handling is done in the NUI
-end)
-
-RegisterNetEvent('qb-multicharacter:client:registerResult', function(result)
-    -- Result handling is done in the NUI
+    
+    -- Send result to NUI for display
+    SendNUIMessage(result)
 end)
 
 -- NUI Callbacks

@@ -225,8 +225,34 @@ class LoginApp {
     }
 
     async makeRequest(endpoint, data) {
-        const response = await axios.post(`https://${endpoint}`, data);
-        return response.data;
+        return new Promise((resolve) => {
+            // Listen for server response
+            const messageHandler = (event) => {
+                const eventData = event.data;
+                if ((eventData.action === 'loginResult' || eventData.action === 'registerResult') && 
+                    eventData.hasOwnProperty('success')) {
+                    window.removeEventListener('message', messageHandler);
+                    resolve(eventData);
+                }
+            };
+            
+            window.addEventListener('message', messageHandler);
+            
+            // Make the actual request to the game
+            if (endpoint.includes('login')) {
+                window.parent.postMessage({
+                    action: 'gameRequest',
+                    type: 'login',
+                    data: data
+                }, '*');
+            } else if (endpoint.includes('register')) {
+                window.parent.postMessage({
+                    action: 'gameRequest', 
+                    type: 'register',
+                    data: data
+                }, '*');
+            }
+        });
     }
 
     setLoading(loading) {

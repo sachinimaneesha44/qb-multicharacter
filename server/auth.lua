@@ -66,7 +66,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
     local license = QBCore.Functions.GetIdentifier(src, 'license')
     
     if not license then
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = false,
             message = 'Unable to verify your identity. Please restart FiveM.'
         })
@@ -74,7 +75,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
     end
 
     if not email or not password or email == '' or password == '' then
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = false,
             message = 'Please fill in all fields.'
         })
@@ -82,7 +84,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
     end
 
     if not IsValidEmail(email) then
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = false,
             message = 'Please enter a valid email address.'
         })
@@ -91,7 +94,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
 
     local user = GetUserByEmail(email)
     if not user then
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = false,
             message = 'Invalid email or password.'
         })
@@ -101,7 +105,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
     local valid = exports['fivem-bcrypt-async']:VerifyPasswordHash(password, user.password_hash)
     if valid then
         if user.license ~= license then
-            TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+            TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+                action = 'loginResult',
                 success = false,
                 message = 'This account is linked to a different FiveM license.'
             })
@@ -109,7 +114,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
         end
 
         UpdateLastLogin(user.id)
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = true,
             message = 'Login successful!',
             userData = {
@@ -119,7 +125,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptLogin', function(email, passwo
             }
         })
     else
-        TriggerClientEvent('qb-multicharacter:client:loginResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'loginResult',
             success = false,
             message = 'Invalid email or password.'
         })
@@ -131,7 +138,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     local license = QBCore.Functions.GetIdentifier(src, 'license')
 
     if not license then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Unable to verify your identity. Please restart FiveM.'
         })
@@ -139,7 +147,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if not username or not email or not password or username == '' or email == '' or password == '' then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Please fill in all fields.'
         })
@@ -147,7 +156,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if not IsValidUsername(username) then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Username must be 3-20 characters and contain only letters, numbers, and underscores.'
         })
@@ -155,7 +165,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if not IsValidEmail(email) then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Please enter a valid email address.'
         })
@@ -163,7 +174,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if #password < 6 then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Password must be at least 6 characters long.'
         })
@@ -171,7 +183,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if GetUserByEmail(email) then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'An account with this email already exists.'
         })
@@ -179,7 +192,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if GetUserByUsername(username) then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'This username is already taken.'
         })
@@ -187,7 +201,8 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     end
 
     if GetUserByLicense(license) then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Your FiveM license is already linked to another account.'
         })
@@ -197,17 +212,31 @@ RegisterNetEvent('qb-multicharacter:server:attemptRegister', function(username, 
     local hash = exports['fivem-bcrypt-async']:GetPasswordHash(password)
     local userId = CreateUserAccount(username, email, hash, license)
     if userId then
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = true,
             message = 'Account created successfully! You can now sign in.'
         })
         print('^2[qb-multicharacter]^7 New account registered: ' .. username .. ' (' .. email .. ')')
     else
-        TriggerClientEvent('qb-multicharacter:client:registerResult', src, {
+        TriggerClientEvent('qb-multicharacter:client:authResult', src, {
+            action = 'registerResult',
             success = false,
             message = 'Failed to create account. Please try again.'
         })
     end
+end)
+
+RegisterNUICallback('login', function(data, cb)
+    local src = source
+    TriggerEvent('qb-multicharacter:server:attemptLogin', data.email, data.password)
+    cb('ok')
+end)
+
+RegisterNUICallback('register', function(data, cb)
+    local src = source
+    TriggerEvent('qb-multicharacter:server:attemptRegister', data.username, data.email, data.password)
+    cb('ok')
 end)
 
 -- Callbacks

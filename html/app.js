@@ -213,6 +213,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     case "setupCharInfo":
                         this.chardata = event.data.chardata;
                         break;
+                    case "gameRequest":
+                        if (event.data.type === 'login') {
+                            axios.post("https://qb-multicharacter/login", event.data.data);
+                        } else if (event.data.type === 'register') {
+                            axios.post("https://qb-multicharacter/register", event.data.data);
+                        }
+                        break;
+                    case "loginResult":
+                    case "registerResult":
+                        // Forward authentication results to login iframe
+                        const loginFrame = document.querySelector('#login-container iframe');
+                        if (loginFrame) {
+                            loginFrame.contentWindow.postMessage(event.data, '*');
+                        }
+                        break;
                 }
             });
         },
